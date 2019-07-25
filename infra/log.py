@@ -27,9 +27,9 @@ def get_log_file_name(name):
         name = os.path.splitext(main_file_name)[0]
 
     parent_dir = os.path.split(main_dir)[0]
-    log_dir = os.path.join(parent_dir, f'/{name}-logs')
+    log_dir = os.path.join(parent_dir, f'{name}-logs')
     os.makedirs(log_dir, exist_ok=True)
-    filename = f'{log_dir}/{name}.log'
+    filename = os.path.join(log_dir, f'{name}.log')
     return filename
 
 
