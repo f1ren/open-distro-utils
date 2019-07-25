@@ -81,7 +81,7 @@ class SnapshotClient:
         )
         debug_str = f'Done snapshot {response["snapshot"]["snapshot"]}'
         debug_str += ', indices ' + ','.join(response['snapshot']['indices'])
-        debug_str += ', failures [' + ','.join(response['snapshot']['failures'] + ']')
+        debug_str += ', failures [' + ','.join(response['snapshot']['failures']) + ']'
         debug(debug_str)
         return response
 
