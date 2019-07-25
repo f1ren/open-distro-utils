@@ -21,4 +21,3 @@ def init_logger(name, level=logging.DEBUG):
 
 def debug(msg):
     logging.debug(msg)
-    print(msg)
