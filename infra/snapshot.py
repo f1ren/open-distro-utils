@@ -109,17 +109,19 @@ class SnapshotClient:
         for snapshot in all_snapshots:
             if first is not None and first > snapshot or last is not None and last < snapshot:
                 debug(f'Skipping {snapshot}')
+                continue
             action(snapshot)
 
     def restore_multiple(self, first=None, last=None):
         self._do_on_multiple(self.restore, first, last)
 
     def delete(self, snapshot, repository=REPOSITORY_NAME):
-        debug(f'Delete {snapshot}')
+        debug(f'Deleting {snapshot}')
         response = self._send(
-            f'{repository}/{snapshot}/_restore',
+            f'{repository}/{snapshot}',
             action_type=HttpAction.DELETE
         )
+        debug(f'Done deleting {snapshot}')
         return response
 
     def delete_multiple(self, first=None, last=None):
