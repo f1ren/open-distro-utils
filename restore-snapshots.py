@@ -26,7 +26,7 @@ def main(admin_cert, admin_key, first, last):
 
 
 if __name__ == '__main__':
-    init_logger('restore-snapshots')
+    init_logger()
     try:
         main()
     except Exception as e:

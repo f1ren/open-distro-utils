@@ -28,7 +28,7 @@ def expand_user_and_check_exists(file_path=None):
     if not os.path.isfile(expanded):
         raise FileNotFoundError(f'Could not find {file_path} at {expanded}')
 
-    debug(f'Found file {file_path}')
+    debug(f'Using {file_path}')
 
     return expanded
 

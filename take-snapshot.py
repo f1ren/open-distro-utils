@@ -4,7 +4,7 @@ from infra.log import init_logger
 
 
 if __name__ == '__main__':
-    init_logger('take-snapshots')
+    init_logger()
     try:
         from infra.snapshot import SnapshotClient
         client = SnapshotClient()
