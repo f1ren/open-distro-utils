@@ -48,7 +48,7 @@ class SnapshotClient:
             return self._cert
 
     def _send(self, url, action_type=HttpAction.GET):
-        full_url = f'{self._base_url}/{url}'
+        full_url = self._base_url + url
         response = action_type(
             full_url,
             auth=self._auth,
