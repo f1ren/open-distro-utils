@@ -10,10 +10,6 @@ from infra.consts import USER, PASS, DEFAULT_ES_URL, REPOSITORY_NAME
 from infra.log import debug
 
 
-def print_json(d):
-    debug(json.dumps(d, indent=2))
-
-
 class HttpAction(Enum):
     GET = requests.get
     PUT = requests.put
@@ -60,9 +56,15 @@ class SnapshotClient:
             params=params,
             **kwargs
         ).json()
+        debug({
+            'request': {
+                'full_url': full_url,
+                'params': params
+            },
+            'response': response
+        })
 
         if 'error' in response:
-            print_json(response)
             raise ValueError(response['error'])
 
         return response
@@ -76,16 +78,20 @@ class SnapshotClient:
             action_type=HttpAction.PUT,
             wait=True
         )
-        debug(f'Done snapshot {name}')
+        debug_str = f'Done snapshot {response["snapshot"]["snapshot"]}'
+        debug_str += ', indices ' + ','.join(response['snapshot']['indices'])
+        debug_str += ', failures [' + ','.join(response['snapshot']['failures'] + ']')
+        debug(debug_str)
         return response
 
     def list_snapshots(self, repository=REPOSITORY_NAME):
         snapshots = self._send(f'{repository}/_all')['snapshots']
-        if len(snapshots) == 0:
+        snapshot_names = [s['snapshot'] for s in snapshots]
+        if len(snapshot_names) == 0:
             debug('No snapshots found')
         else:
-            debug(f'Found {len(snapshots)} snapshots: ' + ', '.join(snapshots[:10]) + (' ...' if len(snapshots) > 10 else ''))
-        return snapshots
+            debug(f'Found {len(snapshot_names)} snapshots: ' + ', '.join(snapshot_names[:10]) + (' ...' if len(snapshot_names) > 10 else ''))
+        return snapshot_names
 
     def restore(self, snapshot, repository=REPOSITORY_NAME):
         debug(f'Restoring snapshot {snapshot}')
