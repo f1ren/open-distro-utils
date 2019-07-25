@@ -19,16 +19,26 @@ class HttpAction(Enum):
 
 
 class SnapshotClient:
-    def __init__(self):
+    def __init__(self, cert=None, key=None):
+        self._cert = cert
+        self._key = key
         self._auth = HTTPBasicAuth(USER, PASS)
         self._base_url = f'{DEFAULT_ES_URL}/_snapshot/'
 
+    @property
+    def cert_and_key(self):
+        if self._cert is not None:
+            if self._key is not None:
+                return self._cert, self._key
+            return self._cert
+
     def _send(self, url, action_type=HttpAction.GET):
         full_url = f'{self._base_url}/{url}'
-        response = action_type.value(
+        response = action_type(
             full_url,
             auth=self._auth,
-            verify=False
+            verify=False,
+            cert=self.cert_and_key
         ).json()
 
         if 'error' in response:

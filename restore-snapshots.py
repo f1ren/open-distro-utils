@@ -4,13 +4,15 @@ import logging
 from infra.log import init_logger
 
 
-@click.command(help='Restore ES snapshots')
+@click.command(help='Restore ES snapshots using ROOT_CA_CERT and ADMIN_KEY')
+@click.argument('root-ca-cert')
+@click.argument('admin-key')
 @click.option('-d', '--first', default=None, help='First snapshot name')
 @click.option('-l', '--last', default=None, help='Last snapshot name')
-def main(first, last):
+def main(cert, key, first, last):
     from infra.snapshot import SnapshotClient
 
-    client = SnapshotClient()
+    client = SnapshotClient(cert, key)
     client.restore_multiple(first, last)
 
 
