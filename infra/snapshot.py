@@ -20,10 +20,16 @@ class HttpAction(Enum):
     POST = requests.post
 
 
-def expand_user_and_check_exists(file_path):
+def expand_user_and_check_exists(file_path=None):
+    if file_path is None:
+        return None
+
     expanded = os.path.expanduser(file_path)
     if not os.path.isfile(expanded):
         raise FileNotFoundError(f'Could not find {file_path} at {expanded}')
+
+    debug(f'Found {file_path}')
+
     return expanded
 
 
