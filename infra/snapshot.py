@@ -51,7 +51,7 @@ class SnapshotClient:
         full_url = self._base_url + url
         params = {}
         if wait:
-            params['wait_for_completion'] = True
+            params['wait_for_completion'] = 'true'
         response = action_type(
             full_url,
             auth=self._auth,
