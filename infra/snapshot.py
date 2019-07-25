@@ -1,3 +1,5 @@
+import os
+
 from datetime import datetime
 import requests
 from enum import Enum
@@ -18,10 +20,17 @@ class HttpAction(Enum):
     POST = requests.post
 
 
+def expand_user_and_check_exists(file_path):
+    expanded = os.path.expanduser(file_path)
+    if not os.path.isfile(expanded):
+        raise FileNotFoundError(f'Could not find {file_path} at {expanded}')
+    return expanded
+
+
 class SnapshotClient:
     def __init__(self, cert=None, key=None):
-        self._cert = cert
-        self._key = key
+        self._cert = expand_user_and_check_exists(cert)
+        self._key = expand_user_and_check_exists(key)
         self._auth = HTTPBasicAuth(USER, PASS)
         self._base_url = f'{DEFAULT_ES_URL}/_snapshot/'
 
