@@ -47,13 +47,18 @@ class SnapshotClient:
                 return self._cert, self._key
             return self._cert
 
-    def _send(self, url, action_type=HttpAction.GET):
+    def _send(self, url, action_type=HttpAction.GET, wait=False, **kwargs):
         full_url = self._base_url + url
+        params = {}
+        if wait:
+            params['wait_for_completion'] = True
         response = action_type(
             full_url,
             auth=self._auth,
             verify=False,
-            cert=self.cert_and_key
+            cert=self.cert_and_key,
+            params=params,
+            **kwargs
         ).json()
 
         if 'error' in response:
@@ -66,7 +71,13 @@ class SnapshotClient:
         if name is None:
             name = datetime.now().strftime("%Y-%m-%d-%H")
         debug(f'Taking snapshot {name}')
-        return self._send(f'{REPOSITORY_NAME}/{name}', action_type=HttpAction.PUT)
+        response = self._send(
+            f'{REPOSITORY_NAME}/{name}',
+            action_type=HttpAction.PUT,
+            wait=True
+        )
+        debug(f'Done snapshot {name}')
+        return response
 
     def list_snapshots(self, repository=REPOSITORY_NAME):
         snapshots = self._send(f'{repository}/_all')['snapshots']
@@ -78,7 +89,11 @@ class SnapshotClient:
 
     def restore(self, snapshot, repository=REPOSITORY_NAME):
         debug(f'Restoring snapshot {snapshot}')
-        response = self._send(f'{repository}/{snapshot}/_restore', action_type=HttpAction.POST)
+        response = self._send(
+            f'{repository}/{snapshot}/_restore',
+            action_type=HttpAction.POST,
+            wait=True
+        )
         debug(f'Restored snapshot {snapshot}')
         return response
 
