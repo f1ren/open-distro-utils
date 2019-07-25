@@ -64,14 +64,14 @@ class SnapshotClient:
 
     def take_snapshot(self, name=None):
         if name is None:
-            name = datetime.now().strftime("%Y-%m-%d %H")
+            name = datetime.now().strftime("%Y-%m-%d-%H")
         debug(f'Taking snapshot {name}')
         return self._send(f'{REPOSITORY_NAME}/{name}', action_type=HttpAction.PUT)
 
     def list_snapshots(self, repository=REPOSITORY_NAME):
         snapshots = self._send(f'{repository}/_all')['snapshots']
         if len(snapshots) == 0:
-            debug('Found no snapshots')
+            debug('No snapshots found')
         else:
             debug(f'Found {len(snapshots)} snapshots: ' + ', '.join(snapshots[:10]) + (' ...' if len(snapshots) > 10 else ''))
         return snapshots

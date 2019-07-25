@@ -20,6 +20,7 @@ def main(admin_cert, admin_key, first, last):
     """
     from infra.snapshot import SnapshotClient
 
+    # admin cert is required to restore the .opendistro_security index
     client = SnapshotClient(admin_cert, admin_key)
     client.restore_multiple(first, last)
 
