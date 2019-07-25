@@ -28,7 +28,7 @@ def expand_user_and_check_exists(file_path=None):
     if not os.path.isfile(expanded):
         raise FileNotFoundError(f'Could not find {file_path} at {expanded}')
 
-    debug(f'Found {file_path}')
+    debug(f'Found file {file_path}')
 
     return expanded
 
@@ -69,8 +69,11 @@ class SnapshotClient:
         return self._send(f'{REPOSITORY_NAME}/{name}', action_type=HttpAction.PUT)
 
     def list_snapshots(self, repository=REPOSITORY_NAME):
-        snapshots = self._send(f'{repository}/_all')
-        debug(f'Found {len(snapshots)} snapshots')
+        snapshots = self._send(f'{repository}/_all')['snapshots']
+        if len(snapshots) == 0:
+            debug('Found no snapshots')
+        else:
+            debug(f'Found {len(snapshots)} snapshots: ' + ', '.join(snapshots[:10]) + (' ...' if len(snapshots) > 10 else ''))
         return snapshots
 
     def restore(self, snapshot, repository=REPOSITORY_NAME):
