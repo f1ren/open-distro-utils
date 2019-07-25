@@ -9,7 +9,7 @@ from infra.log import debug
 
 
 def print_json(d):
-    print(json.dumps(d, indent=2))
+    debug(json.dumps(d, indent=2))
 
 
 class HttpAction(Enum):
@@ -45,7 +45,7 @@ class SnapshotClient:
 
     def list_snapshots(self, repository=REPOSITORY_NAME):
         snapshots = self._send(f'{repository}/_all')
-        debug('Listed snapshots', snapshots)
+        debug(f'Found {len(snapshots)} snapshots')
         return snapshots
 
     def restore(self, snapshot, repository=REPOSITORY_NAME):
@@ -53,5 +53,5 @@ class SnapshotClient:
 
     def restore_all_snapshots(self, repository=REPOSITORY_NAME):
         for snapshot in self.list_snapshots(repository):
-            debug('Restoring', snapshot=snapshot)
+            debug(f'Restoring snapshot {snapshot}')
             self.restore(snapshot)
