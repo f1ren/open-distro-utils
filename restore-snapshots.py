@@ -1,4 +1,6 @@
 # * * * * * source /home/ubuntu/.bashrc; $(which python3) /home/ubuntu/open-distro-utils/take-snapshot.py >> ~/cron.log 2>&1
+import sys
+
 import click
 import logging
 
@@ -28,4 +30,4 @@ if __name__ == '__main__':
         main()
     except Exception as e:
         logging.exception('Could not restore snapshots')
-        raise
+        sys.exit(1)
