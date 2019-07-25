@@ -40,7 +40,7 @@ class SnapshotClient:
     def take_snapshot(self, name=None):
         if name is None:
             name = datetime.now().strftime("%Y-%m-%d %H")
-
+        debug(f'Taking snapshot {name}')
         return self._send(f'{REPOSITORY_NAME}/{name}', action_type=HttpAction.PUT)
 
     def list_snapshots(self, repository=REPOSITORY_NAME):
@@ -49,9 +49,14 @@ class SnapshotClient:
         return snapshots
 
     def restore(self, snapshot, repository=REPOSITORY_NAME):
-        return self._send(f'{repository}/{snapshot}/_restore', action_type=HttpAction.POST)
+        debug(f'Restoring snapshot {snapshot}')
+        response = self._send(f'{repository}/{snapshot}/_restore', action_type=HttpAction.POST)
+        debug(f'Restored snapshot {snapshot}')
+        return response
 
-    def restore_all_snapshots(self, repository=REPOSITORY_NAME):
-        for snapshot in self.list_snapshots(repository):
-            debug(f'Restoring snapshot {snapshot}')
+    def restore_multiple(self, first=None, last=None):
+        all_snapshots = self.list_snapshots()
+        for snapshot in all_snapshots:
+            if first is not None and first > snapshot or last is not None and last < snapshot:
+                debug(f'Skipping {snapshot}')
             self.restore(snapshot)

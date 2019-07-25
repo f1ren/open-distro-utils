@@ -4,7 +4,8 @@ import logging
 from logging.handlers import RotatingFileHandler
 
 
-def init_logger(log_path, level=logging.INFO):
+def init_logger(name, level=logging.DEBUG):
+    log_path = f'logs/{name}.log'
     os.makedirs(os.path.split(log_path)[0], exist_ok=True)
     logging.basicConfig(format='%(asctime)s [%(levelname)s] %(message)s',
                         level=level)
@@ -20,3 +21,4 @@ def init_logger(log_path, level=logging.INFO):
 
 def debug(msg):
     logging.debug(msg)
+    print(msg)
