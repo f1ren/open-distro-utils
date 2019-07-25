@@ -3,7 +3,6 @@ import os
 from datetime import datetime
 import requests
 from enum import Enum
-import json
 from requests.auth import HTTPBasicAuth
 
 from infra.consts import USER, PASS, DEFAULT_ES_URL, REPOSITORY_NAME
