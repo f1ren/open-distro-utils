@@ -14,6 +14,7 @@ class HttpAction(Enum):
     GET = requests.get
     PUT = requests.put
     POST = requests.post
+    DELETE = requests.delete
 
 
 def expand_user_and_check_exists(file_path=None):
@@ -103,9 +104,23 @@ class SnapshotClient:
         debug(f'Restored snapshot {snapshot}')
         return response
 
-    def restore_multiple(self, first=None, last=None):
+    def _do_on_multiple(self, action, first=None, last=None):
         all_snapshots = self.list_snapshots()
         for snapshot in all_snapshots:
             if first is not None and first > snapshot or last is not None and last < snapshot:
                 debug(f'Skipping {snapshot}')
-            self.restore(snapshot)
+            action(snapshot)
+
+    def restore_multiple(self, first=None, last=None):
+        self._do_on_multiple(self.restore, first, last)
+
+    def delete(self, snapshot, repository=REPOSITORY_NAME):
+        debug(f'Delete {snapshot}')
+        response = self._send(
+            f'{repository}/{snapshot}/_restore',
+            action_type=HttpAction.DELETE
+        )
+        return response
+
+    def delete_multiple(self, first=None, last=None):
+        self._do_on_multiple(self.delete, first=first, last=last)
