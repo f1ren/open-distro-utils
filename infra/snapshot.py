@@ -69,7 +69,7 @@ class SnapshotClient:
 
     def take_snapshot(self, name=None):
         if name is None:
-            name = datetime.now().strftime("%Y-%m-%d-%H")
+            name = datetime.now().strftime("%Y-%m-%d-%H-%M")
         debug(f'Taking snapshot {name}')
         response = self._send(
             f'{REPOSITORY_NAME}/{name}',
