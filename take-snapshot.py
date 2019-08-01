@@ -1,7 +1,7 @@
 import logging
 from infra.log import init_logger
 
-# 0 * * * * source /home/ubuntu/.bashrc; $(which python3) /home/ubuntu/open-distro-utils/take-snapshot.py >> ~/cron.log 2>&1
+# 0 */4 * * * source /home/ubuntu/.bashrc; $(which python3) /home/ubuntu/open-distro-utils/take-snapshot.py >> ~/cron.log 2>&1
 
 if __name__ == '__main__':
     init_logger()
