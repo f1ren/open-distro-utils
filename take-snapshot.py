@@ -6,7 +6,7 @@ from infra.log import init_logger
 if __name__ == '__main__':
     init_logger()
     try:
-        from infra.snapshot import SnapshotClient
+        from infra._snapshot import SnapshotClient
         client = SnapshotClient()
         client.take_snapshot()
     except Exception as e:
