@@ -6,11 +6,30 @@ from infra.log import info
 
 DUPLICATE_PATTERN = 'index and alias names need to be unique, but the following duplicates were found \[(.*?) \(alias of \[(.*?)\]\)]'
 NO_PERMISSIONS = 'no permissions for (.*?) and User \[name=(.*?), roles=\[(.*?)\], requestedTenant=(.*?)\]'
+OPEN_INDEX = "\[(.*?)\] cannot restore index \[(.*?)\] because an open index with same name already exists in the cluster. Either close or delete the existing index or restore the index under a different name by providing a rename pattern and replacement name"
 N_RESTORE_ATTEMPTS = 20
 
+
+class RestoreException(Exception):
+    pass
+
+
+class DuplicatePatternException(RestoreException):
+    pass
+
+
+class NoPermissionException(RestoreException):
+    pass
+
+
+class OpenIndexException(RestoreException):
+    pass
+
+
 ERRORS = [
-    (DUPLICATE_PATTERN, 'duplicate index or alias'),
-    (NO_PERMISSIONS, 'No permissions')
+    (DUPLICATE_PATTERN, 'duplicate index or alias', DuplicatePatternException),
+    (NO_PERMISSIONS, 'No permissions', NoPermissionException),
+    (OPEN_INDEX, 'Open index', OpenIndexException)
 ]
 
 SKIP_INDICES = [
@@ -26,12 +45,13 @@ ALL_INDICES = ['.kibana*', 'transcript-*', 'security-*', 'security-auditlog-*', 
 def _parse_error(error):
     error_msg = error['reason']
 
-    for pattern, reason in ERRORS:
+    for pattern, reason, exception_type in ERRORS:
         re_result = re.findall(pattern, error_msg)
         if re_result:
-            return re_result[0][0], reason
+            raise exception_type()
+            # return re_result[0][0], reason
 
-    raise ValueError('Could not parse error: ' + error)
+    raise ValueError('Could not parse error: ' + str(error))
 
 
 class RestoreStrategy:

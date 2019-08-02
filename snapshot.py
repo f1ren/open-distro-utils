@@ -5,6 +5,7 @@ import logging
 
 from infra.consts import DEFAULT_ADMIN_CERT_PATH, DEFAULT_ADMIN_KEY_PATH
 from infra.log import init_logger
+from infra.restore_strategy import IndicesLock
 
 
 @click.command()
@@ -28,7 +29,8 @@ def main(first, last, repo_bucket, restore, list, delete, close_indices, open_in
     elif list:
         client.list_snapshots()
     elif restore:
-        client.restore(restore)
+        with IndicesLock(client):
+            client.restore(restore)
     elif delete:
         client.delete_multiple(first, last)
     elif close_indices:
