@@ -164,9 +164,9 @@ class SnapshotClient(ESClient):
                 continue
             action(snapshot)
 
-    def restore_multiple(self, first=None, last=None):
-        with IndicesLock(self):
-            self._do_on_multiple(self.restore, first, last)
+    # def restore_multiple(self, first=None, last=None):
+    #     with IndicesLock(self):
+    #         self._do_on_multiple(self.restore, first, last)
 
     def close_indices(self, indices=None):
         info('Close all indices')

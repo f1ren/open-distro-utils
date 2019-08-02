@@ -76,10 +76,8 @@ class RestoreStrategy:
 
                 sys.exit(1)
 
-            # OMG that's slow
-            c.close_indices(response['snapshot']['indices'])
-
             break
+
         info(f'Restored snapshot {snapshot}')
 
 
