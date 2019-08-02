@@ -8,8 +8,8 @@ from infra.log import init_logger
 
 
 @click.command()
-# @click.option('-c', '--admin-cert', default=DEFAULT_ADMIN_CERT_PATH, help='Admin certification path (e.g. {DEFAULT_ADMIN_CERT_PATH})')
-# @click.option('-k', '--admin-key', default=DEFAULT_ADMIN_KEY_PATH, help='Admin key path (e.g. {DEFAULT_ADMIN_KEY_PATH})')
+# @click.option('-c', '--cert', default=DEFAULT_ADMIN_CERT_PATH, help='Admin certification path (e.g. {DEFAULT_ADMIN_CERT_PATH})')
+# @click.option('-k', '--key', default=DEFAULT_ADMIN_KEY_PATH, help='Admin key path (e.g. {DEFAULT_ADMIN_KEY_PATH})')
 @click.option('-f', '--first', default=None, help='First snapshot name')
 @click.option('-l', '--last', default=None, help='Last snapshot name')
 @click.option('-b', '--repo-bucket', default=None, help='Bucket name to register snapshot repository')

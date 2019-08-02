@@ -112,8 +112,8 @@ class ESClient:
 
 
 class SnapshotClient(ESClient):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
         self._restore_strategy = RestoreStrategy(self)
 
     def take_snapshot(self, name=None):
