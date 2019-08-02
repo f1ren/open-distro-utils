@@ -174,6 +174,10 @@ class SnapshotClient(ESClient):
         response = self._send(
             f'{",".join(ALL_INDICES)}/_close',
             action_type=HttpAction.POST,
+            params={
+                'ignore_unavailable': 'true',
+                'allow_no_indices': 'true'
+            }
         )
         info('Done close all indices')
 
@@ -182,6 +186,10 @@ class SnapshotClient(ESClient):
         self._send(
             f'{",".join(ALL_INDICES)}/_open',
             action_type=HttpAction.POST,
+            params={
+                'ignore_unavailable': 'true',
+                'allow_no_indices': 'true'
+            }
         )
         info('Done open all indices')
 
