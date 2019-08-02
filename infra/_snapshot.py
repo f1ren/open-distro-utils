@@ -138,8 +138,9 @@ class SnapshotClient(ESClient):
         if len(snapshot_names) == 0:
             info('No snapshots found')
         else:
-            info(f'Found {len(snapshot_names)} snapshots: ' + ', '.join(snapshot_names[:3]) + (
-                ' ...' if len(snapshot_names) > 3 else ''))
+            info(f'Found {len(snapshot_names)} snapshots: ' +
+                 (' ...' if len(snapshot_names) > 3 else '') +
+                 ', '.join(snapshot_names[-3:]))
         return snapshot_names
 
     def restore(self, snapshot, repository=REPOSITORY_NAME):
