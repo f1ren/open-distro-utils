@@ -5,10 +5,12 @@ import re
 from infra.log import info
 
 DUPLICATE_PATTERN = 'index and alias names need to be unique, but the following duplicates were found \[(.*?) \(alias of \[(.*?)\]\)]'
+NO_PERMISSIONS = 'no permissions for (.*?) and User \[name=(.*?), roles=\[(.*?)\], requestedTenant=(.*?)\]'
 N_RESTORE_ATTEMPTS = 20
 
 ERRORS = [
-    (DUPLICATE_PATTERN, 'duplicate index or alias')
+    (DUPLICATE_PATTERN, 'duplicate index or alias'),
+    (NO_PERMISSIONS, 'No permissions')
 ]
 
 SKIP_INDICES = [
@@ -21,11 +23,15 @@ SKIP_INDICES = [
 ALL_INDICES = ['.kibana*', 'transcript-*', 'security-*', 'security-auditlog-*', '.tasks']
 
 
-def _parse_error(error_msg):
+def _parse_error(error):
+    error_msg = error['reason']
+
     for pattern, reason in ERRORS:
         re_result = re.findall(pattern, error_msg)
         if re_result:
             return re_result[0][0], reason
+
+    raise ValueError('Could not parse error: ' + error)
 
 
 class RestoreStrategy:
@@ -35,7 +41,7 @@ class RestoreStrategy:
         self._skip_indices = SKIP_INDICES
 
     def _should_skip(self, response):
-        index_name, reason = _parse_error(response['error']['reason'])
+        index_name, reason = _parse_error(response['error'])
         print(f'{reason}: {index_name}')
         if self._skip_all:
             return True
