@@ -110,6 +110,12 @@ class ESClient:
             '_cluster/state/metadata'
         )
 
+    def delete_index(self, index_name):
+        return self._send(
+            index_name,
+            HttpAction.DELETE
+        )
+
 
 class SnapshotClient(ESClient):
     def __init__(self, **kwargs):
