@@ -49,12 +49,14 @@ def get_log_file_name(name):
     return filename
 
 
-def info(msg):
-    logging.info(msg)
+def info(msg, **kwargs):
+    # logging.info(msg, extra=kwargs)
+    logging.info(msg + ' ' + ', '.join([f'{k}: {v}' for k, v in kwargs.items()]))
 
 
-def debug(msg):
-    logging.debug(msg)
+def debug(msg, **kwargs):
+    # logging.debug(msg, extra=kwargs)
+    logging.debug(msg + ' ' + ', '.join([f'{k}: {v}' for k, v in kwargs.items()]))
 
 
 log_request = logging.getLogger('requests_log').debug

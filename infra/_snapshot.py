@@ -116,6 +116,14 @@ class ESClient:
             HttpAction.DELETE
         )
 
+    def list_indices(self, pattern=None):
+        if pattern is None:
+            pattern = '*'
+        return [r['index'] for r in self._send(
+            f'_cat/indices/{pattern}?format=JSON',
+            HttpAction.GET
+        )]
+
 
 class SnapshotClient(ESClient):
     def __init__(self, **kwargs):
