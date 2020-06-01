@@ -125,10 +125,14 @@ class ESClient:
     def list_indices(self, pattern=None):
         if pattern is None:
             pattern = '*'
-        return [r['index'] for r in self._send(
-            f'_cat/indices/{pattern}?format=JSON',
-            HttpAction.GET
-        )]
+
+        indices = []
+        for p in pattern.split(';'):
+            indices += [r['index'] for r in self._send(
+                f'_cat/indices/{p}?format=JSON',
+                HttpAction.GET
+            )]
+        return indices
 
 
 class SnapshotClient(ESClient):
