@@ -13,7 +13,7 @@ from infra.log import init_logger, info
 @click.option('-m', '--months-old', default=None, help='Number of months ago to limit indices')
 @click.option('-d', '--delete', is_flag=True, default=False, help='Delete indices')
 def main(indices, pattern, months_old, delete):
-    from infra._snapshot import ESClient
+    from infra._es import ESClient
 
     client = ESClient()
 
