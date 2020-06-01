@@ -27,7 +27,7 @@ def main(indices, pattern, months_old, delete):
 
         indices = filter_older_than(indices, months_ago)
 
-    info('Working on', indices=', '.join(indices))
+    info('Matching indices', indices=', '.join(indices))
 
     if delete:
         if indices:

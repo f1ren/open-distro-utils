@@ -1,15 +1,20 @@
-import re
-from datetime import date, timedelta
+from datetime import timedelta, datetime
+
+from dateutil.parser import parse, ParserError
 
 
-def extract_month(index_name):
-    return re.findall('\d\d\d\d-[0-2]\d', index_name)[0]
+def _index_name_is_older_than(index_name, datetime_cursor):
+    try:
+        parsed_datetime = parse(index_name, fuzzy=True)
+    except ParserError:
+        return False
+
+    return parsed_datetime <= datetime_cursor
 
 
 def filter_older_than(indices, month_ago):
-    cursor = date.today()
+    cursor = datetime.utcnow()
     for i in range(month_ago):
         first = cursor.replace(day=1)
         cursor = first - timedelta(days=1)
-    threshold_month_str = cursor.strftime("%Y-%m")
-    return [i for i in indices if extract_month(i) < threshold_month_str]
+    return [i for i in indices if _index_name_is_older_than(i, cursor)]
