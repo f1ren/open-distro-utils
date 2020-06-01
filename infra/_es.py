@@ -67,7 +67,11 @@ class ESClient:
         if wait:
             params['wait_for_completion'] = 'true'
         if payload is not None:
-            payload = json.dumps(payload)
+            if isinstance(payload, list):
+                payload = '\n'.join([json.dumps(p) for p in payload])
+            else:
+                payload = json.dumps(payload)
+            payload += '\n'
             headers['Content-type'] = 'application/json'
         response = action_type(
             full_url,
@@ -98,7 +102,9 @@ class ESClient:
 
         if raise_on_error:
             if 'error' in response_dict:
-                raise ValueError(f"{response_dict['error']['type']}: {response_dict['error']['reason']}")
+                if isinstance(response_dict['error'], dict):
+                    raise ValueError(f"{response_dict['error']['type']}: {response_dict['error']['reason']}")
+                raise ValueError(response_dict['error'])
 
             if response.status_code != 200:
                 raise ValueError(response_text)
